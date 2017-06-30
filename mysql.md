@@ -1,21 +1,21 @@
 ---------------MySQL-------------------------------------------------
-#×Ô¶¯ÇåÀí·½·¨1£º£¨ĞŞ¸ÄÅäÖÃÎÄ¼şºÍÔÚmysqlÄÚÉèÖÃ²ÎÊı¿ÉÎŞĞèÖØÆô·şÎñ£©
+#è‡ªåŠ¨æ¸…ç†æ–¹æ³•1ï¼šï¼ˆä¿®æ”¹é…ç½®æ–‡ä»¶å’Œåœ¨mysqlå†…è®¾ç½®å‚æ•°å¯æ— éœ€é‡å¯æœåŠ¡ï¼‰
 vim my.cnf
-expire_logs_days = 7 // ±íÊ¾ÈÕÖ¾±£Áô7Ìì£¬³¬¹ı7ÌìÔòÉèÖÃÎª¹ıÆÚµÄ 
+expire_logs_days = 7 // è¡¨ç¤ºæ—¥å¿—ä¿ç•™7å¤©ï¼Œè¶…è¿‡7å¤©åˆ™è®¾ç½®ä¸ºè¿‡æœŸçš„ 
 # mysql -u root -p > show binary logs; > show variables like '%log%'; > set global expire_logs_days = 7;
 
-#ÊÖ¶¯ÇåÀí·½·¨2£º£¨ÍÆ¼ö£©
-Èç¹ûÃ»ÓĞÖ÷´Ó¸´ÖÆ£¬¿ÉÒÔÍ¨¹ıÏÂÃæµÄÃüÁîÖØÖÃÊı¾İ¿âÈÕÖ¾£¬Çå³ıÖ®Ç°µÄÈÕÖ¾ÎÄ¼ş£º
+#æ‰‹åŠ¨æ¸…ç†æ–¹æ³•2ï¼šï¼ˆæ¨èï¼‰
+å¦‚æœæ²¡æœ‰ä¸»ä»å¤åˆ¶ï¼Œå¯ä»¥é€šè¿‡ä¸‹é¢çš„å‘½ä»¤é‡ç½®æ•°æ®åº“æ—¥å¿—ï¼Œæ¸…é™¤ä¹‹å‰çš„æ—¥å¿—æ–‡ä»¶ï¼š
 reset master
  
-µ«ÊÇÈç¹û´æÔÚ¸´ÖÆ¹ØÏµ£¬Ó¦µ±Í¨¹ı PURGE µÄÃûÀ´ÇåÀí bin-log ÈÕÖ¾£¬Óï·¨ÈçÏÂ£º
+ä½†æ˜¯å¦‚æœå­˜åœ¨å¤åˆ¶å…³ç³»ï¼Œåº”å½“é€šè¿‡ PURGE çš„åæ¥æ¸…ç† bin-log æ—¥å¿—ï¼Œè¯­æ³•å¦‚ä¸‹ï¼š
  
 # mysql -u root -p
-> purge master logs to 'mysql-bin.010¡¯; //Çå³ımysql-bin.010ÈÕÖ¾
-> purge master logs before '2016-02-28 13:00:00'; //Çå³ı2016-02-28 13:00:00Ç°µÄÈÕÖ¾
-> purge master logs before date_sub(now(), interval 3 day); //Çå³ı3ÌìÇ°µÄbinÈÕÖ¾
+> purge master logs to 'mysql-bin.010â€™; //æ¸…é™¤mysql-bin.010æ—¥å¿—
+> purge master logs before '2016-02-28 13:00:00'; //æ¸…é™¤2016-02-28 13:00:00å‰çš„æ—¥å¿—
+> purge master logs before date_sub(now(), interval 3 day); //æ¸…é™¤3å¤©å‰çš„binæ—¥å¿—
  
-×¢Òâ£¬²»ÒªÇáÒ×ÊÖ¶¯È¥É¾³ıbinlog£¬»áµ¼ÖÂbinlog.indexºÍÕæÊµ´æÔÚµÄbinlog²»Æ¥Åä£¬¶øµ¼ÖÂexpire_logs_dayÊ§Ğ§
+æ³¨æ„ï¼Œä¸è¦è½»æ˜“æ‰‹åŠ¨å»åˆ é™¤binlogï¼Œä¼šå¯¼è‡´binlog.indexå’ŒçœŸå®å­˜åœ¨çš„binlogä¸åŒ¹é…ï¼Œè€Œå¯¼è‡´expire_logs_dayå¤±æ•ˆ
 	-------
 #PURGE MASTER LOGS BEFORE DATE_SUB(CURRENT_DATE,INTERVAL 7 DAY);
 
@@ -23,12 +23,23 @@ show slave status
 hknavi-relay-bin
 
 ---------------Nginx-------------------------------------------------
-Æô¶¯£º/usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf
-ÖØÆô£º/usr/local/nginx/sbin/nginx -s  reload
-Í£Ö¹£ºps¨Cef | grepnginx£¨²é¿´½ø³ÌºÅ£©
-kill -9 Ö÷½ø³ÌºÅ
-kill -9 ×Ó½ø³ÌºÅ£¨¿ÉÄÜÓĞ¶à¸ö£©
+å¯åŠ¨ï¼š/usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf
+é‡å¯ï¼š/usr/local/nginx/sbin/nginx -s  reload
+åœæ­¢ï¼špsâ€“ef | grepnginxï¼ˆæŸ¥çœ‹è¿›ç¨‹å·ï¼‰
+kill -9 ä¸»è¿›ç¨‹å·
+kill -9 å­è¿›ç¨‹å·ï¼ˆå¯èƒ½æœ‰å¤šä¸ªï¼‰
 
 
 
 ----------------------------------------------------------------
+
+å®‰è£…mysql 5.7.11
+ 1.ä¸‹è½½ï¼šwget http://cdn.mysql.com/Downloads/MySQL-5.7/mysql-server_5.7.11-1ubuntu12.04_amd64.deb-bundle.tar
+ 2.è§£å‹ï¼štar -xvf mysql-server_5.7.11-1ubuntu12.04_amd64.deb-bundle.tar 
+3.ä¾æ¬¡æ‰§è¡Œï¼š
+sudo apt-get install libaio1
+sudo dpkg-preconfigure mysql-community-server_*.deb
+sudo dpkg -i mysql-{common,community-client,client,community-server,server}_*.deb
+è¿™æœŸé—´å¦‚æœé‡åˆ°ä»»ä½•ä¾èµ–é—®é¢˜ï¼Œè¯·æ‰§è¡Œï¼š 
+sudo apt-get -f install
+4.ä¿®æ”¹my.cnf 

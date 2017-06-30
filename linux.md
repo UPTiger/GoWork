@@ -1,6 +1,8 @@
 #查看当前系统版本 
 cat /etc/redhat-release  
 CentOS release 6.6 (Final) 
+uname -a:
+file /bin/ls
 #查看当前目录文件大小
 du -sh *
 df -h
