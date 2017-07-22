@@ -46,3 +46,9 @@
 [5272:4768:0630/143418:INFO:wow_nt_service_impl.cc(179)] Current process doesn't have full admin rights.
 [5272:4768:0630/143418:INFO:wow_nt_service_impl.cc(240)] Process's session ID: 1
 [5272:4768:0630/143418:INFO:wow_proxy_process_delegate.cc(72)] Elevate process from proxy process."C:\Program Files (x86)\UCBrowser\Application\UCBrowser.exe" --type=wow-updater -cenumupdatemode:updatemode_aliimtimer, with session ID: 1, hide: 1
+[3612:3140:0630/163419:INFO:wow_nt_service_impl.cc(179)] Current process doesn't have full admin rights.
+[3612:3140:0630/163419:INFO:wow_nt_service_impl.cc(240)] Process's session ID: 1
+[3612:3140:0630/163419:INFO:wow_proxy_process_delegate.cc(72)] Elevate process from proxy process."C:\Program Files (x86)\UCBrowser\Application\UCBrowser.exe" --type=wow-updater -cenumupdatemode:updatemode_aliimtimer, with session ID: 1, hide: 1
+[5880:4292:0630/173420:INFO:wow_nt_service_impl.cc(179)] Current process doesn't have full admin rights.
+[5880:4292:0630/173420:INFO:wow_nt_service_impl.cc(240)] Process's session ID: 1
+[5880:4292:0630/173420:INFO:wow_proxy_process_delegate.cc(72)] Elevate process from proxy process."C:\Program Files (x86)\UCBrowser\Application\UCBrowser.exe" --type=wow-updater -cenumupdatemode:updatemode_aliimtimer, with session ID: 1, hide: 1
