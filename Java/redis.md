@@ -1,23 +1,114 @@
 http://download.redis.io/releases/redis-3.2.9.tar.gz
 
+service reidsd start
+
+设置Bind值以那个IP对外提供服务
+
 redis 学院
 http://www.runoob.com/redis/redis-install.html
 ---------------------------------------------------------
-客户端连接
-　/usr/local/redis/bin/redis-cli 
-停止redis实例
-　　/usr/local/redis/bin/redis-cli shutdown
-或者
-　　pkill redis-server
-让redis开机自启
-　　vim /etc/rc.local
-　　加入
-　　/usr/local/redis/bin/redis-server /usr/local/redis/etc/redis-conf
+
+https://blog.csdn.net/liulihui1988/article/details/78087495?utm_source=debugrun&utm_medium=referral
+
+亲测可以执行：https://www.cnblogs.com/onephp/p/6245902.html
+
+redis 下载 https://redis.io/download
+
+```
+wget http://download.redis.io/releases/redis-3.2.6.tar.gz
+```
+
+解压缩
+
+```
+tar xzf redis-3.2.6.tar.gz
+```
+
+进入解压后的文件目录
+
+```
+cd redis-3.2.6
+```
+
+redis安装相对简单 直接编译即可
+
+```
+make
+```
+
+创建存储redis文件目录
+
+```
+mkdir -p /usr/local/redis
+```
+
+复制redis-server redis-cli到新建立的文件夹
+
+```
+cp ./redis-server /usr/local/redis/
+cp ./redis-cli /usr/local/redis/
+```
+
+复制redis的配置文件
+
+```
+cd ..
+cp redis.conf /usr/local/redis/
+```
+
+编辑配置文件
+
+```
+cd /usr/local/redis/
+vim redis.conf
+```
+
+![img](https://images2015.cnblogs.com/blog/931262/201701/931262-20170103182144284-577583439.png)改为yes 后台运行 
+
+添加开机启动服务
+
+```
+vim /etc/systemd/system/redis-server.service
+```
+
+粘贴一下内容
+
+按 Ctrl+C 复制代码
+
+按 Ctrl+C 复制代码
+
+ 设置开机启动
+
+```
+systemctl daemon-reload 
+systemctl start redis-server.service 
+systemctl enable redis-server.service
+```
+
+检查是否安装成功
+
+![img](https://images2015.cnblogs.com/blog/931262/201701/931262-20170103182358378-909440994.png)
+
+创建redis命令软连接
+
+```
+ln -s /usr/local/redis/redis-cli /usr/bin/redis
+```
+
+测试redis
+
+![img](https://images2015.cnblogs.com/blog/931262/201701/931262-20170103182546597-499368577.png)
+
+
+
+---------------------------------------------------------------------------------------------------------
+
+
 
 Redis的配置
 　　daemonize：如需要在后台运行，把该项的值改为yes
 　　pdifile：把pid文件放在/var/run/redis.pid，可以配置到其他地址
-　　bind：指定redis只接收来自该IP的请求，如果不设置，那么将处理所有请求，在生产环节中最好设置该项
+　　**bind**：指定redis只接收来自该IP的请求，如果不设置，那么将处理所有请求，在生产环节中最好设置该项
 　　port：监听端口，默认为6379
 　　timeout：设置客户端连接时的超时时间，单位为秒
 　　loglevel：等级分为4级，debug，revbose，notice和warning。生产环境下一般开启notice
@@ -39,8 +130,7 @@ Redis的配置
 　　vm_max_momery：设置开启虚拟内存后，redis将使用的最大物理内存的大小，默认为0
 　　vm_page_size：设置虚拟内存页的大小
 　　vm_pages：设置交换文件的总的page数量
-　　vm_max_thrrads：设置vm IO同时使用的线程数量
-----------------------------------------------------------
+##### 　　vm_max_thrrads：设置vm IO同时使用的线程数量
 wget http://download.redis.io/releases/redis-3.2.9.tar.gz
 tar -zxvf redis-3.0.7.tar.gz
 编译：
@@ -49,67 +139,9 @@ make
 /src/redis-server
 运行成功如下图：
 将redis做成一个服务：
-修改redis.conf,将后台运行选项打开
 
-# By default Redis does not run as a daemon. Use 'yes' if you need it.
-# Note that Redis will write a pid file in /var/run/redis.pid when daemonized.
-daemonize yes
-编写脚本，vim /etc/init.d/redis:
- 
 
-# chkconfig: 2345 10 90
-# description: Start and Stop redis
-  
-REDISPORT=6379 #实际环境而定
-EXEC=/root/redis-3.0.7/src/redis-server #实际环境而定
-REDIS_CLI=/root/redis-3.0.7/src/redis-cli #实际环境而定
-  
-PIDFILE=/var/run/redis.pid
-CONF="/root/redis-3.0.7/redis.conf" #实际环境而定
-  
-case "$1" in
-        start)
-                if [ -f $PIDFILE ]
-                then
-                        echo "$PIDFILE exists, process is already running or crashed."
-                else
-                        echo "Starting Redis server..."
-                        $EXEC $CONF
-                fi
-                if [ "$?"="0" ]
-                then
-                        echo "Redis is running..."
-                fi
-                ;;
-        stop)
-                if [ ! -f $PIDFILE ]
-                then
-                        echo "$PIDFILE exists, process is not running."
-                else
-                        PID=$(cat $PIDFILE)
-                        echo "Stopping..."
-                        $REDIS_CLI -p $REDISPORT SHUTDOWN
-                        while [ -x $PIDFILE ]
-                        do
-                                echo "Waiting for Redis to shutdown..."
-                                sleep 1
-                        done
-                        echo "Redis stopped"
-                fi
-                ;;
-        restart|force-reload)
-                ${0} stop
-                ${0} start
-                ;;
-        *)
-                echo "Usage: /etc/init.d/redis {start|stop|restart|force-reload}" >&2
-                exit 1
-esac
-　　
 
- 
- 
-运行效果如下图：
  4. Redis的配置
 
 4.1. Redis默认不是以守护进程的方式运行，可以通过该配置项修改，使用yes启用守护进程
@@ -147,18 +179,21 @@ esac
 4.9. 指定在多长时间内，有多少次更新操作，就将数据同步到数据文件，可以多个条件配合
 
     save <seconds> <changes>
-
+    
     Redis默认配置文件中提供了三个条件：
-
+    
     save 900 1
-
+    
     save 300 10
-
+    
     save 60 10000
-
+    
     分别表示900秒（15分钟）内有1个更改，300秒（5分钟）内有10个更改以及60秒内有10000个更改。
 
  
+
+
+
 
 4.10. 指定存储至本地数据库时是否压缩数据，默认为yes，Redis采用LZF压缩，如果为了节省CPU时间，可以关闭该选项，但会导致数据库文件变的巨大
 
@@ -209,6 +244,9 @@ esac
 
  
 
+
+
+
 4.21. 指定是否启用虚拟内存机制，默认值为no，简单的介绍一下，VM机制将数据分页存放，由Redis将访问量较少的页即冷数据swap到磁盘上，访问多的页面由磁盘自动换出到内存中（在后面的文章我会仔细分析Redis的VM机制）
 
      vm-enabled no
@@ -240,7 +278,7 @@ esac
 4.28. 指定在超过一定的数量或者最大的元素超过某一临界值时，采用一种特殊的哈希算法
 
     hash-max-zipmap-entries 64
-
+    
     hash-max-zipmap-value 512
 
 4.29. 指定是否激活重置哈希，默认为开启（后面在介绍Redis的哈希算法时具体介绍）
@@ -258,3 +296,32 @@ http://blog.csdn.net/niucsd/article/details/50966733
 codis集群部署实战 重量级！！！！
 http://navyaijm.blog.51cto.com/4647068/1637688
 -------------------------------------------------------------------------------------
+
+
+
+
+
+# redis的启动方式
+
+1.直接启动
+  进入redis根目录，执行命令:
+  #加上‘&’号使redis以后台程序方式运行
+
+ 2.通过指定配置文件启动
+  可以为redis服务启动指定配置文件，例如配置为/etc/redis/6379.conf
+  进入redis根目录，输入命令：
+
+  #如果更改了端口，使用`redis-cli`客户端连接时，也需要指定端口，例如：
+
+3.使用redis启动脚本设置开机自启动
+  启动脚本 redis_init_script 位于位于Redis的 /utils/ 目录下，redis_init_script脚本代码如下：
+
+ 根据启动脚本，将修改好的配置文件复制到指定目录下，用root用户进行操作：
+
+ 将启动脚本复制到/etc/init.d目录下，本例将启动脚本命名为redisd（通常都以d结尾表示是后台自启动服务）。
+
+设置为开机自启动，直接配置开启自启动 chkconfig redisd on 发现错误： service redisd does not support chkconfig
+
+解决办法，在启动脚本开头添加如下注释来修改运行级别：
+
+ 再设置即可

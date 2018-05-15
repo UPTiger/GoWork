@@ -65,7 +65,6 @@ svctm: 平均每次设备I/O操作的服务时间 (毫秒)。即 delta(use)/delt
 ----
 2.3 iotop
 
-
 ----
 重启后生效 
 开启： chkconfig iptables on 
@@ -101,7 +100,7 @@ service vsftpd status
 ******
 修改配置文件
 vi /etc/vsftpd/vsftpd.conf 
- 
+
 #服务器独立运行 
 listen=YES 
 #设定不允许匿名访问 
@@ -131,27 +130,27 @@ vsftpd_log_file=/var/log/vsftpd.log
 进行认证
 #安装Berkeley DB工具，很多人找不到db_load的问题就是没有安装这个包 
 yum install db4 db4-utils 
- 
+
 #创建用户密码文本，注意奇行是用户名，偶行是密码 
 vi /etc/vsftpd/vuser_passwd.txt 
- 
+
 test 
 123456 
- 
+
 #生成虚拟用户认证的db文件 
 db_load -T -t hash -f /etc/vsftpd/vuser_passwd.txt /etc/vsftpd/vuser_passwd.db 
- 
+
 #编辑认证文件，全部注释掉原来语句，再增加以下两句 
 vi /etc/pam.d/vsftpd 
- 
+
 auth required pam_userdb.so db=/etc/vsftpd/vuser_passwd 
 account required pam_userdb.so db=/etc/vsftpd/vuser_passwd 
- 
+
 #创建虚拟用户配置文件 
 mkdir /etc/vsftpd/vuser_conf/ 
 #文件名等于vuser_passwd.txt里面的账户名，否则下面设置无效 
 vi /etc/vsftpd/vuser_conf/test 
- 
+
 #虚拟用户根目录,根据实际情况修改 
 local_root=/data/ftp 
 write_enable=YES 
@@ -175,3 +174,61 @@ systemctl enable firewalld 打开防火墙命令。
 ----------------------------------------------------------------
 
 ----------------------------------------------------------------
+
+
+
+[CentOS](http://www.linuxidc.com/topicnews.aspx?tid=14) 7.0默认使用的是firewall作为防火墙，使用iptables必须重新设置一下
+
+1、直接关闭防火墙
+
+systemctl stop firewalld.service #停止firewall
+
+systemctl disable firewalld.service #禁止firewall开机启动
+
+2、设置 iptables service
+
+yum -y install iptables-services
+
+如果要修改防火墙配置，如增加防火墙端口3306
+
+vi /etc/sysconfig/iptables
+
+增加规则
+
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 3306 -j ACCEPT
+
+保存退出后
+
+systemctl restart iptables.service #重启防火墙使配置生效
+
+systemctl enable iptables.service #设置防火墙开机启动
+
+最后重启系统使设置生效即可。
+
+——————————————————————————
+
+CentOS查看CPU温度:
+
+1.yum install lm_sensors;
+
+2.sensors-detect
+
+3.sensors
+
+4.watch sensors
+
+CentOS查找不到netstat lsof 
+
+yum install net-tools 
+
+yum install lsof
+
+CentOS查找端口
+
+netstat -lnp |grep 88
+
+ps 1777
+
+kill -9 1777
+
+——————————————————————————
