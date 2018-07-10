@@ -4,6 +4,76 @@ service reidsd start
 
 设置Bind值以那个IP对外提供服务
 
+
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+
+
+# 安装redis
+
+下载地址：<http://redis.io/download>
+
+1、将下载好的redis复制到：/opt/software/redis-4.0.9.tar.gz
+
+2、在/opt/software/目录下执行命令：tar -zxvf redis-4.0.9.tar.gz -C /opt/local/
+
+3、进入/opt/local/redis-4.0.9/目录：cd /opt/local/redis-4.0.9
+
+4、执行make install命令；
+
+以上步骤可以将redis安装完成。
+
+# 将redis设置成开机启动
+
+1、进入redis目录：/opt/local/redis-4.0.9
+
+2、执行命令：./utils/install_server.sh 
+
+3、一直默认即可：
+
+```
+[root@localhost redis-4.0.9]# ./utils/install_server.sh 
+Welcome to the redis service installer
+This script will help you easily set up a running redis server
+
+Please select the redis port for this instance: [6379] 
+Selecting default: 6379
+Please select the redis config file name [/etc/redis/6379.conf] 
+Selected default - /etc/redis/6379.conf
+Please select the redis log file name [/var/log/redis_6379.log] 
+Selected default - /var/log/redis_6379.log
+Please select the data directory for this instance [/var/lib/redis/6379] 
+Selected default - /var/lib/redis/6379
+Please select the redis executable path [/usr/local/bin/redis-server] 
+Selected config:
+Port           : 6379
+Config file    : /etc/redis/6379.conf
+Log file       : /var/log/redis_6379.log
+Data dir       : /var/lib/redis/6379
+Executable     : /usr/local/bin/redis-server
+Cli Executable : /usr/local/bin/redis-cli
+Is this ok? Then press ENTER to go on or Ctrl-C to abort.
+Copied /tmp/6379.conf => /etc/init.d/redis_6379
+Installing service...
+Successfully added to chkconfig!
+Successfully added to runlevels 345!
+Starting Redis server...
+Installation successful!
+```
+
+以上操作可以将redis设置为开机启动。
+
+PS：通过这种方式这是redis开机启动，redis的配置文件路径：/etc/redis/6379.conf
+
+​        所以如果修改redis的配置文件，修改路径应该是：/etc/redis/6379.conf
+
+​        redis安装目录下的配置文件/opt/local/redis-4.0.9/redis.conf修改会不生效；
+
+​        如果想要使用/opt/local/redis-4.0.9/redis.conf，修改/etc/init.d/redis_6379文件即可。
+
+------------------------------------------------------------------------------------------------------------------------------------
+
 redis 学院
 http://www.runoob.com/redis/redis-install.html
 ---------------------------------------------------------
@@ -42,11 +112,12 @@ make
 mkdir -p /usr/local/redis
 ```
 
-复制redis-server redis-cli到新建立的文件夹
+复制src目录下的redis-server redis-cli到新建立的文件夹
 
 ```
-cp ./redis-server /usr/local/redis/
-cp ./redis-cli /usr/local/redis/
+cd src
+cp redis-server /usr/local/redis/
+cp redis-cli /usr/local/redis/
 ```
 
 复制redis的配置文件
@@ -71,11 +142,19 @@ vim redis.conf
 vim /etc/systemd/system/redis-server.service
 ```
 
-粘贴一下内容
+[Unit]
+Description=The redis-server Process Manager
+After=syslog.target network.target
 
-按 Ctrl+C 复制代码
+[Service]
+Type=simple
+PIDFile=/var/run/redis_6379.pid
+ExecStart=/usr/local/redis/redis-server /usr/local/redis/redis.conf         
+ExecReload=/bin/kill -USR2 $MAINPID
+ExecStop=/bin/kill -SIGINT $MAINPID
 
-按 Ctrl+C 复制代码
+[Install]
+WantedBy=multi-user.target
 
  设置开机启动
 
@@ -99,7 +178,15 @@ ln -s /usr/local/redis/redis-cli /usr/bin/redis
 
 ![img](https://images2015.cnblogs.com/blog/931262/201701/931262-20170103182546597-499368577.png)
 
+2.第二种方式 （永久方式）
+需要永久配置密码的话就去redis.conf的配置文件中找到requirepass这个参数，如下配置：
 
+修改redis.conf配置文件　　
+
+\# requirepass foobared
+requirepass 123   指定密码123
+
+保存后重启redis就可以了
 
 ---------------------------------------------------------------------------------------------------------
 
@@ -195,6 +282,7 @@ make
 
 
 
+
 4.10. 指定存储至本地数据库时是否压缩数据，默认为yes，Redis采用LZF压缩，如果为了节省CPU时间，可以关闭该选项，但会导致数据库文件变的巨大
 
     rdbcompression yes
@@ -243,6 +331,7 @@ make
     appendfsync everysec
 
  
+
 
 
 

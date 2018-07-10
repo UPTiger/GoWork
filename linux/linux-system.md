@@ -1,22 +1,96 @@
 http://lib.csdn.net/base/linux
 --------------------------------------------------------------------------------
+top命令按1，看到几个CPU就代表是几核的。
+
+查看CPU有几颗逻辑cpu,4代表有4个逻辑CPU，同时CPU的型号也打印出了，服务器一般都是至强的CPU
+
+[root@svn ~]# cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c 
+4 Intel(R) Xeon(R) CPU E5-2407 v2 @ 2.40GHz 
+
+**查看cpu是几核的，也可以用命令显示，4代表就是4核**
+
+[root@svn ~]# cat /proc/cpuinfo |grep "cores"|uniq
+cpu cores : 4
+
+**查看物理CPU的个数，1代表只有一个物理CPU**
+
+[root@svn ~]# cat /proc/cpuinfo |grep "physical id"|sort |uniq|wc -l
+1
+
+逻辑CPU数量=物理cpu数量 x cpu cores 这个规格值 x 2(如果支持并开启ht)
+
+--------------------------------------------------------------------------------------------------------------------------
+
 #查看当前系统版本 
+
 cat /etc/redhat-release  
 CentOS release 6.6 (Final) 
 uname -a:
 file /bin/ls
 #查看当前目录文件大小
 du -sh *
-df -h
+df -Th
 #linux LVM分区查看dm设备
 iostat -d
 #查找dm-N对应的挂载点
-sar -d 1
+
+#sar -d 1
+
+挂载磁盘
+
+https://help.aliyun.com/document_detail/25426.html?spm=5176.11065259.1996646101.searchclickresult.2e961dd1jnLq4c
+
+
+
+---------------------------------------------------------------------------------------------------------
+
+磁盘ext3转换ext4
+
+1.df -TH
+
+/dev/vdb1 ext3 1.1T 80M 1.1T 1% /mnt
+
+2.umount /dev/vdb1
+
+3.tune2fs -O extents,uninit_bg,dir_index /dev/vdb1
+
+4.fsck -pk /dev/vdb1
+
+5.mkfs.ext4 /dev/vdb1（可以不执行有可能会破坏数据）
+
+6.mount /dev/vdb1 /mnt
+
+7.恢复fstab
+
+8.修改echo /dev/vdb1 /mnt ext4 defaults 0 0 >> /etc/fstab
+
+
+
+
+
 #性能查看器
-top
-#设置本机时间
+**1. 使用w命令查看登录用户正在使用的进程信息** 
+
+w 
+
+who
+
+users
+
+**随时查看系统的历史信息（曾经使用过系统的用户信息）** 
+
+last root
+
+-----------------------------------------------------------------------------------------------------
+
+设置本机时间
+
 dig pool.ntp.org
 ntpdate pool.ntp.org / ntpdate 202.112.29.82
+
+-----------------------------------------------------------------------------------------
+
+TOP
 
 ----- https://linux.cn/article-4452-1.html 
 1.1 vmstat命令的含义为显示虚拟内存状态（“Virtual Memor Statics”），但是它可以报告关于进程、内存、I/O等系统整体运行状态。
@@ -207,7 +281,7 @@ systemctl enable iptables.service #设置防火墙开机启动
 
 ——————————————————————————
 
-CentOS查看CPU温度:
+**CentOS查看CPU温度:**
 
 1.yum install lm_sensors;
 
@@ -217,13 +291,13 @@ CentOS查看CPU温度:
 
 4.watch sensors
 
-CentOS查找不到netstat lsof 
+**CentOS查找不到netstat lsof** 
 
 yum install net-tools 
 
 yum install lsof
 
-CentOS查找端口
+**CentOS查找端口**
 
 netstat -lnp |grep 88
 
@@ -232,3 +306,76 @@ ps 1777
 kill -9 1777
 
 ——————————————————————————
+
+
+
+在本示例中，我们用一个新的 20 GiB 数据盘（设备名为 /dev/xvdb）创建一个单分区数据盘并挂载一个 ext3 文件系统。使用的实例是 I/O 优化实例，操作系统为 CentOS 6.8。
+
+1. [远程连接实例](https://help.aliyun.com/document_detail/25425.html)。
+
+2. 运行 `fdisk -l` 命令查看实例是否有数据盘。如果执行命令后，没有发现 **/dev/vdb**，表示您的实例没有数据盘，无需格式化数据盘，请忽略本文后续内容。
+
+   - 如果您的数据盘显示的是 **dev/xvd?**，表示您使用的是非 I/O 优化实例。
+   - 其中 *?* 是 a−z 的任一个字母。
+
+3. 创建一个单分区数据盘，依次执行以下命令：
+
+   1. 运行 `fdisk /dev/vdb`：对数据盘进行分区。
+
+   2. 输入 `n` 并按回车键：创建一个新分区。
+
+   3. 输入 `p` 并按回车键：选择主分区。因为创建的是一个单分区数据盘，所以只需要创建主分区。
+
+      > **说明：**如果要创建 4 个以上的分区，您应该创建至少一个扩展分区，即选择 `e`。
+
+   4. 输入分区编号并按回车键。因为这里仅创建一个分区，可以输入 1。
+
+   5. 输入第一个可用的扇区编号：按回车键采用默认值 1。
+
+   6. 输入最后一个扇区编号：因为这里仅创建一个分区，所以按回车键采用默认值。
+
+   7. 输入 `wq` 并按回车键，开始分区。
+
+      ```
+      [root@iXXXXXXX ~]# fdisk /dev/vdbDevice contains neither a valid DOS partition table, nor Sun, SGI or OSF disklabelBuilding a new DOS disklabel with disk identifier 0x5f46a8a2.Changes will remain in memory only, until you decide to write them.After that, of course, the previous content won't be recoverable.Warning: invalid flag 0x0000 of partition table 4 will be corrected by w(rite)WARNING: DOS-compatible mode is deprecated. It's strongly recommended to  switch off the mode (command 'c') and change display units to  sectors (command 'u').Command (m for help): nCommand actione   extendedp   primary partition (1-4)pPartition number (1-4): 1First cylinder (1-41610, default 1): 1Last cylinder, +cylinders or +size{K,M,G} (1-41610, default 41610):Using default value 41610Command (m for help): wqThe partition table has been altered!Calling ioctl() to re-read partition table.Syncing disks.
+      ```
+
+4. 查看新的分区：运行命令 `fdisk -l`。如果出现以下信息，说明已经成功创建了新分区 /dev/vdb1。
+
+   ```
+   [root@iXXXXXXX ~]# fdisk -lDisk /dev/vda: 42.9 GB, 42949672960 bytes255 heads, 63 sectors/track, 5221 cylindersUnits = cylinders of 16065 * 512 = 8225280 bytesSector size (logical/physical): 512 bytes / 512 bytesI/O size (minimum/optimal): 512 bytes / 512 bytesDisk identifier: 0x00053156Device Boot      Start         End      Blocks   Id  System/dev/vda1   *           1        5222    41942016   83  LinuxDisk /dev/vdb: 21.5 GB, 21474836480 bytes16 heads, 63 sectors/track, 41610 cylindersUnits = cylinders of 1008 * 512 = 516096 bytesSector size (logical/physical): 512 bytes / 512 bytesI/O size (minimum/optimal): 512 bytes / 512 bytesDisk identifier: 0x5f46a8a2Device Boot      Start         End      Blocks   Id  System/dev/vdb1               1       41610    20971408+  83  Linux
+   ```
+
+5. 在新分区上创建一个文件系统：运行命令 `mkfs.ext4 /dev/vdb1`。(mkfs.ext4 -L /dev/vdb1)
+
+   - 本示例要创建一个 ext4 文件系统。您也可以根据自己的需要，选择创建其他文件系统，例如，如果需要在 Linux、Windows 和 Mac 系统之间共享文件，您可以使用 `mkfs.vfat` 创建 VFAT 文件系统。
+
+   - 创建文件系统所需时间取决于数据盘大小。
+
+     ```
+     [root@iXXXXXXX ~]# mkfs.ext4 /dev/vdb1mke2fs 1.41.12 (17-May-2010)Filesystem label=OS type: LinuxBlock size=4096 (log=2)Fragment size=4096 (log=2)Stride=0 blocks, Stripe width=0 blocks1310720 inodes, 5242852 blocks262142 blocks (5.00%) reserved for the super userFirst data block=0Maximum filesystem blocks=4294967296160 block groups32768 blocks per group, 32768 fragments per group8192 inodes per groupSuperblock backups stored on blocks: 32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208, 4096000Writing inode tables: doneCreating journal (32768 blocks): doneWriting superblocks and filesystem accounting information: doneThis filesystem will be automatically checked every 37 mounts or180 days, whichever comes first.  Use tune2fs -c or -i to override.
+     ```
+
+6. （建议）备份 **etc/fstab**：运行命令 `cp /etc/fstab /etc/fstab.bak`。
+
+7. 向 **/etc/fstab** 写入新分区信息：运行命令 `echo /dev/vdb1 /mnt ext4 defaults 0 0 >> /etc/fstab`。
+
+   > **说明**：Ubuntu 12.04 不支持 barrier，所以对该系统正确的命令是：`echo '/dev/vdb1 /mnt ext4 barrier=0 0 0' >> /etc/fstab`。
+
+   如果需要把数据盘单独挂载到某个文件夹，比如单独用来存放网页，请将以上命令 /mnt 替换成所需的挂载点路径。
+
+8. 查看 **/etc/fstab** 中的新分区信息：运行命令 `cat /etc/fstab`。
+
+   ```
+    [root@iXXXXXXX ~]# cat /etc/fstab # # /etc/fstab # Created by anaconda on Thu Feb 23 07:28:22 2017 # # Accessible filesystems, by reference, are maintained under '/dev/disk' # See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info # UUID=3d083579-f5d9-4df5-9347-8d27925805d4 /                       ext4    defaults        1 1 tmpfs                   /dev/shm                tmpfs   defaults        0 0 devpts                  /dev/pts                devpts  gid=5,mode=620  0 0 sysfs                   /sys                    sysfs   defaults        0 0 proc                    /proc                   proc    defaults        0 0 /dev/vdb1 /mnt ext4 defaults 0 0
+   ```
+
+9. 挂载文件系统：运行命令 `mount /dev/vdb1 /mnt`。
+
+10. 查看目前磁盘空间和使用情况：运行命令 `df -h`。如果出现新建文件系统的信息，说明挂载成功，可以使用新的文件系统了。
+
+    挂载操作完成后，不需要重启实例即可开始使用新的文件系统。
+
+    ```
+    [root@iXXXXXXX ~]# mount /dev/vdb1 /mnt[root@iXXXXXXX ~]# df -hFilesystem      Size  Used Avail Use% Mounted on/dev/vda1        40G  6.6G   31G  18% /tmpfs           499M     0  499M   0% /dev/shm/dev/vdb1        20G  173M   19G   1% /mnt
+    ```
