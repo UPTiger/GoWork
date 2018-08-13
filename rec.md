@@ -1,0 +1,1 @@
+FOTA,/fota_bin/GT10/,XQ_GT10_V1.18.bin

@@ -1,3 +1,11 @@
+redis-cli keys "GT10_123456*" | xargs redis-cli del
+
+如果不行则先执行：
+
+redis-cli keys "GT10_123456*" | xargs
+
+
+
 http://download.redis.io/releases/redis-3.2.9.tar.gz
 
 service reidsd start

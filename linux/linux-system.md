@@ -307,8 +307,38 @@ kill -9 1777
 
 ——————————————————————————
 
+同步系统时间：https://www.cnblogs.com/intval/p/5763929.html
+
+1.  安装ntpdate工具
+
+\# yum -y install ntp ntpdate
+
+2.  设置系统时间与网络时间同步
+
+\# ntpdate cn.pool.ntp.org
+
+3.  将系统时间写入硬件时间
+
+\# hwclock --systohc
+
+4.强制系统时间写入CMOS中防止重启失效
+
+　　hwclock -w
+　　或clock -w
+
+四、定时执行时间同步任务，所以我们利用crontab -e 来添加定时任务
+
+\#* */1 * * * root ntpdatetime.nuri.net;hwclock -w 
+
+![img](https://images2015.cnblogs.com/blog/513841/201608/513841-20160812102124078-171184924.png) 
 
 
+
+30 5 * * * /usr/sbin/ntpdate -u asia.pool.ntp.org;hwclock -w
+
+每天早上5点30分
+
+查看日志看某个job有没有执行/报错tail -f /var/log/cron 
 在本示例中，我们用一个新的 20 GiB 数据盘（设备名为 /dev/xvdb）创建一个单分区数据盘并挂载一个 ext3 文件系统。使用的实例是 I/O 优化实例，操作系统为 CentOS 6.8。
 
 1. [远程连接实例](https://help.aliyun.com/document_detail/25425.html)。

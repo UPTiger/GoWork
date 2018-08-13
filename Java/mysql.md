@@ -23,7 +23,12 @@ reset master
 show slave status
 hknavi-relay-bin
 
-
+---------------Nginx-------------------------------------------------
+启动：/usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf
+重启：/usr/local/nginx/sbin/nginx -s  reload
+停止：ps–ef | grepnginx（查看进程号）
+kill -9 主进程号
+kill -9 子进程号（可能有多个）
 
 
 
@@ -41,6 +46,12 @@ sudo apt-get -f install
 
 4.修改my.cnf 
 
+
+----------------mysql 1055 sql_mode=only_full_group_by--------------------
+
+->mysql> select @@GLOBAL.sql_mode;
+
+->set sql_mode=(select replace(@@GLOBAL.sql_mode,'ONLY_FULL_GROUP_BY',''));
 
 
 ----------------------------------------------------------------------------------------------------------------------------
@@ -77,16 +88,10 @@ Mysql登录：mysql -u root -p
 
 socket文件：/var/run/mysqld/mysqld.pid 
 
-
-
-------------------------------------------------------------------------------------------
-
-1、创建新用户
-
+->mysql> select @@GLOBAL.sql_mode;
+->set sql_mode=(select replace(@@GLOBAL.sql_mode,'ONLY_FULL_GROUP_BY',''));
 　　通过root用户登录之后创建
-
 　　>> grant all privileges on *.* to testuser@localhost identified by "123456" ;　　//　　创建新用户，用户名为testuser，密码为123456 ；
-
 　　>> grant all privileges on *.* to testuser@localhost identified by "123456" ;　　//　　设置用户testuser，可以在本地访问mysql
 
 　　>> grant all privileges on *.* to testuser@"%" identified by "123456" ;　　　//　　设置用户testuser，可以在远程访问mysql

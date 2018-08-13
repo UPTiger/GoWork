@@ -13,9 +13,9 @@ https://zhidao.baidu.com/question/1370888350841621259.html
    tcp        0      0 0.0.0.0:21                  0.0.0.0:*                   LISTEN 
    如果看到以上信息，证明ftp服务已经开启。
 6.如果需要开启root用户的ftp权限要修改以下两个文件
-  #vi /etc/vsftpd.ftpusers中注释掉root
-  #vi /etc/vsftpd.user_list中也注释掉root
-  然后重新启动ftp服务。 
+    #vi /etc/vsftpd.ftpusers中注释掉root
+    #vi /etc/vsftpd.user_list中也注释掉root
+    然后重新启动ftp服务。 
 7. vsftpd 500 OOPS: cannot change directory   登陆报错:
    C:\>ftp 192.168.0.101   Connected to 192.168.0.101.
    220 (vsFTPd 2.0.5)   User (192.168.0.101:(none)): frank
@@ -34,3 +34,5 @@ https://zhidao.baidu.com/question/1370888350841621259.html
       (a) system-config-services , 进入图形界面的System services查看是否有 vsftpd项,如果没有转到2.,保存后退出
 　 (b) 用redhat第三张盘 安装此服务（开始--删除/增加程序），200K左右　 (c) #setup
 　　  此时能看到vsftpd项，此时选中此services项,保存后退出.
+
+local_root=/mnt/ftp_user
