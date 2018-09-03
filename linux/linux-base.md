@@ -1,3 +1,15 @@
+查看版本号：cat /etc/redhat-release
+
+查看名称：hostnamectl
+
+修改主机名称：hostnamectl set-hostname  xxxxx
+
+查看主机名称： cat /etc/hostname 
+
+
+
+------------------------------------------------------------
+
 查看CPU信息（型号）
 [root@AAA ~]# cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c
         Intel(R) Xeon(R) CPU E5-2630 0 @ 2.30GHz

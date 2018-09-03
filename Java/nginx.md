@@ -125,3 +125,6 @@ nginx: [error] invalid PID number "" in "/usr/local/nginx/logs/nginx.pid"
  
 
 看nginx.pid文件已经有了。
+
+-----------------------Nginx TCP----------------------------------
+

@@ -1,3 +1,9 @@
+cd /home/developer/module/zookeeper-3.4.13/ && bin/zkServer.sh start
+
+cd /home/developer/module/kafka_2.11-2.0.0/ && bin/kafka-server-start.sh config/server.properties
+
+[root@server6 zookeeper]$ bin/zkServer.sh start
+
 *启动集群依次在server6、tsung8、tsung9节点上启动kafka
 
 [root@server6 kafka]$ bin/kafka-server-start.sh config/server.properties &
@@ -13,6 +19,10 @@
 [root@tsung8 kafka]$ bin/kafka-server-stop.sh stop
 
 [root@tsung9 kafka]$ bin/kafka-server-stop.sh stop
+
+
+
+https://blog.csdn.net/steve_frank/article/details/81838513
 
 
 
@@ -37,6 +47,12 @@
 \>atguigu  atguigu
 
 *消费消息
+
+2.0版本：
+
+bin/kafka-console-consumer.sh --bootstrap-server r730-104:9092 --topic test --from-beginning
+
+1.2版本：
 
 [root@tsung8 kafka]$ bin/kafka-console-consumer.sh --zookeeper server6:2181 --from-beginning --topic first
 

@@ -1,3 +1,9 @@
+
+
+
+
+--------------tt-----------------
+
 2018-07-16 10:08:35,890 [myid:3] - WARN  [WorkerSender[myid=3]:QuorumCnxManager@584] - Cannot open channel to 2 at election address /192.168.31.8:2999
 java.net.NoRouteToHostException: 没有到主机的路由 (Host unreachable)
 
