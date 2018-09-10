@@ -12,17 +12,21 @@ http://www.51testing.com/index.php?action-viewnews-itemid-3720564-php-1
 
 在主机A上执行如下：
 
-　1.　$cd ~/.ssh
+ 　1.　$cd ~/.ssh
+ 　2.　$ssh-keygen -t rsa  --------------------然后一直按回车键，就会按照默认的选项将生成的密钥保存在.ssh/id_rsa文件中。
+ 　3.　$cp id_rsa.pub 主机A.id_rsa.pub
+ 　4.　$scp 主机A.id_rsa.pub root@主机B:~/.ssh
+ 　5.　B机：$cd ~/.ssh && ssh-keygen -t rsa
+ 　6.　$cp id_rsa.pub 主机B.id_rsa.pub
+ 　7.　$cat *.id_rsa.pub authorized_keys 
 
-　2.　$ssh-keygen -t rsa  --------------------然后一直按回车键，就会按照默认的选项将生成的密钥保存在.ssh/id_rsa文件中。
+         这步完成后，正常情况下就可以无密码登录本机了，即ssh localhost，无需输入密码。
 
-　3.　$cp id_rsa.pub authorized_keys 
+	将生成的key再copy回A机
 
-​         这步完成后，正常情况下就可以无密码登录本机了，即ssh localhost，无需输入密码。
+ 　4.　$scp authorized_keys hadoop@192.168.1.111:/home/hadoop/.ssh   ------把刚刚产生的authorized_keys文件拷一份到主机B上.　　
 
-　4.　$scp authorized_keys hadoop@192.168.1.111:/home/hadoop/.ssh   ------把刚刚产生的authorized_keys文件拷一份到主机B上.　　
-
-　5.　$chmod 600 authorized_keys       
+ 　5.　$chmod 600 authorized_keys       
 
 　　   进入主机B的.ssh目录，改变authorized_keys文件的许可权限。
 
@@ -54,13 +58,13 @@ http://www.51testing.com/index.php?action-viewnews-itemid-3720564-php-1
 
 　　**$ps -Af | grep agent** 
 
-​        检查ssh代理是否开启，如果有开启的话，kill掉该代理，然后执行下面，重新打开一个ssh代理，如果没有开启，直接执行下面：
+        检查ssh代理是否开启，如果有开启的话，kill掉该代理，然后执行下面，重新打开一个ssh代理，如果没有开启，直接执行下面：
 
-​       $ssh-agent
+       $ssh-agent
 
 　　还是不行的话，执行下面，重启一下ssh服务
 
-​       $sudo service sshd restart
+       $sudo service sshd restart
 
 \4. 执行ssh-add时提示“Could not open a connection to your authenticationh agent”而失败
 
@@ -92,7 +96,7 @@ cat A.id_rsa.pub > authorized_keys
 
 　3.　$cp id_rsa.pub authorized_keys 
 
-​         这步完成后，正常情况下就可以无密码登录本机了，即ssh localhost，无需输入密码。
+         这步完成后，正常情况下就可以无密码登录本机了，即ssh localhost，无需输入密码。
 
 　4.　$scp authorized_keys hadoop@192.168.1.111:/home/hadoop/.ssh   ------把刚刚产生的authorized_keys文件拷一份到主机B上.　　
 
@@ -128,13 +132,13 @@ cat A.id_rsa.pub > authorized_keys
 
 　　$ps -Af | grep agent 
 
-​        检查ssh代理是否开启，如果有开启的话，kill掉该代理，然后执行下面，重新打开一个ssh代理，如果没有开启，直接执行下面：
+        检查ssh代理是否开启，如果有开启的话，kill掉该代理，然后执行下面，重新打开一个ssh代理，如果没有开启，直接执行下面：
 
-​       $ssh-agent
+       $ssh-agent
 
 　　还是不行的话，执行下面，重启一下ssh服务
 
-​       $sudo service sshd restart
+       $sudo service sshd restart
 
 \4. 执行ssh-add时提示“Could not open a connection to your authenticationh agent”而失败
 

@@ -28,19 +28,19 @@ https://www.linuxidc.com/Linux/2016-09/134907.htm
 
 10.cd /usr/local/nginx/sbin/
 
-​	./nginx 
+	./nginx 
 
-​	./nginx -s stop
+	./nginx -s stop
 
-​	./nginx -s quit
+	./nginx -s quit
 
-​	./nginx -s reload
+	./nginx -s reload
 
 11.重新加载配置文件 ./nginx -s reload 
 
 12.开机自启动
 
-​	vi /etc/rc.local增加/usr/local/nginx/sbin/nginx (chmod 755 rc.local)
+	vi /etc/rc.local增加/usr/local/nginx/sbin/nginx (chmod 755 rc.local)
 
 
 
@@ -128,3 +128,51 @@ nginx: [error] invalid PID number "" in "/usr/local/nginx/logs/nginx.pid"
 
 -----------------------Nginx TCP----------------------------------
 
+http://nginx.org/en/docs/stream/ngx_stream_core_module.html
+
+安装：
+
+（1）配置Nginx编译文件参数
+
+```
+./configure --prefix=/usr/local/nginx --with-http_stub_status_module --with-stream
+```
+
+（2）编译、安装，make,make install .
+
+（3）配置nginx.conf文件
+
+```
+stream {
+    upstream backend {
+        hash $remote_addr consistent;
+
+        server backend1.example.com:12345 weight=5;
+        server 127.0.0.1:12345            max_fails=3 fail_timeout=30s;
+        server unix:/tmp/backend3;
+    }
+
+    upstream dns {
+       server 192.168.0.1:53535;
+       server dns.example.com:53;
+    }
+
+    server {
+        listen 12345;
+        proxy_connect_timeout 1s;
+        proxy_timeout 3s;
+        proxy_pass backend;
+    }
+
+    server {
+        listen 127.0.0.1:53 udp reuseport;
+        proxy_timeout 20s;
+        proxy_pass dns;
+    }
+
+    server {
+        listen [::1]:12345;
+        proxy_pass unix:/tmp/stream.socket;
+    }
+}
+```
