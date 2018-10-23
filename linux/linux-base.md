@@ -24,5 +24,22 @@ cpu cores    : 6
 # 查看逻辑CPU的个数
 [root@AAA ~]# cat /proc/cpuinfo| grep "processor"| wc -l
 
+-----------热清除nohup.out-----------
+
+第一种：cp /dev/null nohup.out
+第二种：cat /dev/null > nohup.out
+
+-----------nohup.out 不输出内容-----------
+
+//只输出错误信息到日志文件
+nohup ./program >/dev/null 2>log &
+//什么信息也不要
+nohup ./program >/dev/null 2>&1 &
+
+0:表示标准输入
+1:标准输出,在一般使用时，默认的是标准输出
+2:标准错误信息输出
 
 
+
+    public static final int START_DELIMITER_LEN = 2;

@@ -20,7 +20,7 @@ cd /home/developer/module/kafka_2.11-2.0.0/ && bin/kafka-server-start.sh config/
 
 [root@tsung9 kafka]$ bin/kafka-server-stop.sh stop
 
-
+丢包 时延
 
 https://blog.csdn.net/steve_frank/article/details/81838513
 
