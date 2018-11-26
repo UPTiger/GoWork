@@ -92,10 +92,19 @@ last root
 -----------------------------------------------------------------------------------------------------
 
 设置本机时间
-
+yum install ntpdate
 dig pool.ntp.org
 ntpdate pool.ntp.org / ntpdate 202.112.29.82
+显示时区
+TC time: Tue 2018-11-20 03:30:23
+       Time zone: America/New_York (EST, -0
+设置服务器为UTC时区
+timedatectl set-timezone UTC
+timedatectl set-local-rtc 0 # 将硬件时钟调整为与本地时钟一致, 0 为设置为 UTC 时间
+timedatectl status
 
+也可以直接用下面命令直接更换时区
+cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 -----------------------------------------------------------------------------------------
 
 TOP
