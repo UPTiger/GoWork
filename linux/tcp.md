@@ -1,34 +1,61 @@
 netstat -nat|awk '{print awk $NF}'|sort|uniq -c|sort -n
-
 lsof -i:8101
-
 netstat -nat|grep -i "8101"|wc -l
-
 ss -t state fin-wait-1
-ss -s
-
+**ss -s
 cp /dev/null nohup.out
+--------------------------------------------------------
+netstat -nat|awk '{print awk $NF}'|sort|uniq -c|sort -n
+      1 established)
+      1 State
+      2 SYN_RECV
+     27 LISTEN
+     36 TIME_WAIT
+    578 FIN_WAIT1
+   2143 ESTABLISHED
 
+netstat -st
+
+高人：
+https://blog.csdn.net/dog250/article/details/81697403
+如果主动断开端调用了close关掉了进程，它会进入FIN_WAIT1状态，如果接收端的接收窗口呈现关闭状态(零窗口)，此时它会不断发送零窗口探测包。发送多少次呢？有两种实现： 
+低版本内核(至少社区3.10及以下)：永久尝试，如果探测ACK每次都返回，则没完没了。
+高版本内核(至少社区4.6及以上)：限制尝试tcp_orphan_retries次，不管是否收到探测ACK。 
+--------------------- 
+作者：dog250 
+
+https://blog.csdn.net/bytxl/article/details/46544169
+--------------------------------------------------------
 # 防止linux出现大量 FIN_WAIT1,提高性能
-
 https://blog.csdn.https://blog.csdn.net/talent210/article/details/65441819net/talent210/article/details/65441819
+fin_wait1状态过多。fin_wait1状态是在server端主动要求关闭tcp连接，并且主动发送fin以后，等待client端回复ack时候的状态。fin_wait1的产生原因有很多，需要结合netstat的状态来分析。
+netstat -nat|awk '{print awk $NF}'|sort|uniq -c|sort -n
+上面的命令可以帮助分析哪种tcp状态数量异常
+netstat -nat|grep ":8101"|awk '{print $5}' |awk -F: '{print $1}' | sort| uniq -c|sort -n
 
 ## [服务器大量的fin_wait1 状态长时间存在原因分析](https://www.cnblogs.com/10087622blog/p/7281883.html)
-
 https://www.cnblogs.com/10087622blog/p/7281883.html
 
+&&&参考下面文章修改
+** https://blog.csdn.net/bytxl/article/details/46437363
+tcp_orphan_retries ：INTEGER
+默认值是7
+在近端关闭TCP连接﹐没有得到确认之前，要进行多少次重试。（参见官方文档）默认值是7个﹐相当于 50秒 - 16分钟﹐视 RTO 而定。（有说法是：这个参数控制主动关闭段发送FIN，没有收到回应，重复发送FIN的次数。由于发送了FIN，处于FIN_WAIT_1状态。）如果您的系统是负载很大的web服务器﹐那么也许需要降低该值﹐这类 sockets 可能会耗费大量的资源。另外参的考 tcp_max_orphans 。(事实上做NAT的时候,降低该值也是好处显著的,我本人的网络环境中降低该值为3)
+
+#最近测试发现socket会永远停留在FIN_WAIT_1这个状态，而不会重传超时RESET后closed。
+--------------------- 
+作者：bytxl 
+来源：CSDN 
+原文：https://blog.csdn.net/bytxl/article/details/46437363 
+版权声明：本文为博主原创文章，转载请附上博文链接！
+--------------------------------------------------------
 ss -s
-
 [root@localhost ~]# ss -t state fin-wait-1
-
 ss -tn state fin-wait-1|grep -v Recv-Q|awk 'BEGIN{sum=0}{sum+=$2}END{printf "%.2f\n",sum}'
 
 也就是先设置fin-wait-1状态，然后再发fin包，
-
 理论上说，fin-wait-1的状态应该很难看到才对，因为只要收到对方的ack，就应该迁移到fin-wait-2了，如果收到对方的fin，则应该迁移到
-
 closing状态。但是该服务器上就很多。难道没有收到ack或者fin包？抓包验证下：
-
 进而抓包， tcpdump -i eth0  "tcp[tcpflags] & (tcp-fin) != 0" -s 90 -p -n
 
 根据报文，看到了fin包的重传，而有时候刚好遇到对端通告的窗口为0，所以进入fin-wait-1后呆的时间就比较长。
@@ -39,16 +66,13 @@ $ netstat -su #udp
 $ netstat -sw #raw
 $ netstat -nap
 $ netstat -naptu | more
------------------------------
- 
-
+----------------------------- 
 比如我看到fin-wait-1之后，我可以抓之后的交互包，
 
 [root@localhost ~]# ss -to state Fin-wait-1 |head -200 |grep -i 10.96.152.219
 0 387543 服务器ip 客户端ip 1 timer:(persist,1.140ms,0)
 在这里我们看到了坚持定时器，通过脚本，我获取了fin-wait-1的链路，有的定时器的长度退避之后，达到了120s，然后一直120s进行探测。
 
- 
 
 在这里说一下脚本的思路：
 

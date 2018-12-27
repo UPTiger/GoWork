@@ -1,12 +1,23 @@
+--------------------多--------------------------------
+https://www.cnblogs.com/aaron-agu/p/8003831.html
+user root root;
+worker_processes  8;
+worker_cpu_affinity 00000001 00000010 00000100 00001000 00010000 00100000 01000000 1000000; 
+
+worker_processes 2;
+worker_cpu_affinity 0101 1010;
+0101也就是第1、3个逻辑CPU上，1010就是第2、4个逻辑CPU上。 
+
+----------------------------------------------------
 Nginx优化
 https://juejin.im/post/5adb45e96fb9a07ab773c767
----------------------------优化----------------------------------------------------
+---------------------------优化----------------------------------------------
 https://www.linuxidc.com/Linux/2016-09/134907.htm
 ---------------------------setup---------------------------------------------
 1.yum install gcc-c++
 2.yum install -y zlib zlib-devel
 3.yum install -y openssl openssl-devel
-4.wget -c https://nginx.org/download/nginx-1.14.0.tar.gz
+4.wget -c https://nginx.org/download/nginx-1.14.1.tar.gz
 5.tar -zxvf nginx-1.14.0.tar.gz
 6.cd nginx-1.14.0
 7.使用默认配置  ./configure
@@ -20,6 +31,14 @@ https://www.linuxidc.com/Linux/2016-09/134907.htm
 11.重新加载配置文件 ./nginx -s reload 
 12.开机自启动
 	vi /etc/rc.local增加/usr/local/nginx/sbin/nginx (chmod 755 rc.local)
+
+用root用户进入....nginx/sbin
+然后chown root nginx
+chmod u+s nginx
+然后通过普通用户就可以启动了。
+增加普通用户修改配置文件权限。
+cd /usr/local/nginx/conf/
+chmod 666 nginx.conf
 ---------------Nginx-------------------------------------------------
 启动：/usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf
 重启：/usr/local/nginx/sbin/nginx -s  reload

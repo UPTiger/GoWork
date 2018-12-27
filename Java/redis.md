@@ -135,6 +135,8 @@ gem install redis 成功后开始配置Redis单机文件
 五、配置Redis
 新建6个文件夹用来存放每一个节点数据。为了方便移植将Redis可执行文件拷贝到每一个文件夹。
 ----redis cluster------------------------------------------------------------------
+bind 127.0.0.1 106.3.226.247 113.106.93.247
+
 daemonize    yes                          //redis后台运行
 pidfile  /var/run/redis_2003.pid          //pidfile文件对应7000,7002,7003
 port  2003                                //端口7000,7002,7003
@@ -142,7 +144,7 @@ cluster-enabled  yes                      //开启集群  把注释#去掉
 cluster-config-file  nodes_2003.conf      //集群的配置  配置文件首次启动自动生成 7000,7001,7002
 cluster-node-timeout  5000                //请求超时  设置5秒够了
 一般来说不需要开启appendonly aof日志文件太大，GPS应用对Redis数据，并没有非常高要求
-appendonly  yes                           //aof日志开启  有需要就开启，它会每次写操作都记录一条日志
+#appendonly  yes                           //aof日志开启  有需要就开启，它会每次写操作都记录一条日志
 
 dir /home/developer/redis-cluster/2003/
 logfile "/home/developer/redis-cluster/2003/redis-2003.log"
@@ -177,9 +179,11 @@ ps -ef | grep redis
 2004/redis-cli -p 2004 shutdown
 2005/redis-cli -p 2005 shutdown
 
-六、创建集群
+六、创建集群106.3.226.247 113.106.93.247
 ./redis-trib.rb  create --replicas  1  127.0.0.1:2000 127.0.0.1:2001  127.0.0.1:2002  127.0.0.1:2003  127.0.0.1:2004  127.0.0.1:2005
 [developer@r730-104 redis-cluster]$ ./redis-trib.rb  create --replicas  1  172.16.18.104:2000 172.16.18.104:2001  172.16.18.104:2002  172.16.18.104:2003  172.16.18.104:2004  172.16.18.104:2005
+./redis-trib.rb  create --replicas  1  106.3.226.247:2000 106.3.226.247:2001  106.3.226.247:2002  106.3.226.247:2003  106.3.226.247:2004  106.3.226.247:2005
+
 >>> Creating cluster
 >>> Performing hash slots allocation on 6 nodes...
 Using 3 masters:
@@ -242,6 +246,7 @@ requirepass hkredispassword1test
 
 方式二：进入各个实例进行设置：
 ./redis-cli -c -p 7000 
+
 config set masterauth hkredispassword1test 
 config set requirepass hkredispassword1test 
 config rewrite 
@@ -270,6 +275,7 @@ class Client
     }
 带密码访问集群
 ./redis-cli -h 127.0.0.1 -c -p 2000 
+2000/redis-cli -c -p 2000
 auth hkredispassword1test
 
 ./redis-cli -h 127.0.0.1 -c -p 2000 -a hkredispassword1test
@@ -309,6 +315,7 @@ redis状态监控可视化工具RedisLive使用
 https://www.cnblogs.com/dyfblog/p/8329918.html
 
 ./redis-cli -h 127.0.0.1 -c -p 2000
+auth hkredispassword1test
 
 127.0.0.1:2000> cluster nodes
 d268ffb7f284ff22ad3d9d9877d89489f4f082a4 127.0.0.1:2000@12000 myself,master - 0 1542696402000 1 connected 0-5460

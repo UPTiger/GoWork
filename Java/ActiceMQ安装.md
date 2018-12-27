@@ -1,4 +1,9 @@
-ActiceMQ安装
+ActiceMQ下载安装
+apache-activemq-5.15.3-bin.tar.gz
+
+[deve@r730-104 soft]$ wget http://mirror.bit.edu.cn/apache//activemq/5.15.8/apache-activemq-5.15.8-bin.tar.gz
+[deve@r730-104 soft]$ tar -zvxf a apache-activemq-5.15.8-bin.tar.gz -C /usr/local/activemq
+
 
 启动、访问、查看状态和停止activemq服务
 
@@ -10,50 +15,31 @@ ActiceMQ安装
 ```
 
 activemq注册为系统服务，开启开机自启
-
 ------
-
 1.建立软连接
-
-```
 # ln -s /usr/local/activemq/bin/activemq /etc/init.d/activemqd
-```
 
 2.注册为系统服务
-
-```
 # vi /etc/init.d/activemqd
-```
-
 - 添加下面内容到/etc/init.d/activemq脚本
-
-```
 # chkconfig: 345 63 37
 # description: Auto start ActiveMQ
 JAVA_HOME=/usr/local/jdk1.8.0_144
 JAVA_CMD=java1234
-```
 
 **/usr/java/jdk1.8.0_171/bin/env增加ACTIVEMQ_HOME,JAVA_HOME 
-
 **echo $PATH
 
 ** 增加PATH=    
-
 ​	export PATH 代替JAVA_HOME
-
 ***重复第一步
 
 3.开启开机自启
-
-```
 # chkconfig activemq on
 # reboot
-```
 
 4.可以以系统服务的方式启动、查看状态和停止服务
 
-```
 # service activemq start
 # service activemq status
 # service activemq stop
