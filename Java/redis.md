@@ -184,6 +184,7 @@ ps -ef | grep redis
 [developer@r730-104 redis-cluster]$ ./redis-trib.rb  create --replicas  1  172.16.18.104:2000 172.16.18.104:2001  172.16.18.104:2002  172.16.18.104:2003  172.16.18.104:2004  172.16.18.104:2005
 ./redis-trib.rb  create --replicas  1  106.3.226.247:2000 106.3.226.247:2001  106.3.226.247:2002  106.3.226.247:2003  106.3.226.247:2004  106.3.226.247:2005
 
+./redis-trib.rb  create --replicas  1  113.106.93.247:2000 113.106.93.247:2001  113.106.93.247:2002  113.106.93.247:2003  113.106.93.247:2004  113.106.93.247:2005
 >>> Creating cluster
 >>> Performing hash slots allocation on 6 nodes...
 Using 3 masters:

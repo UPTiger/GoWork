@@ -1,0 +1,17 @@
+ADFHOST1682="http://yesky.sunrtb.com";
+ADFCID1682=5;
+ADFBID1682=1682;
+ADFLOC='CNGDSZ00';
+ADFUSER1682="http://yesky.sunrtb.com/c?m=yesky&v=5.71803.1682&rf=http%3A%2F%2Fwww.chinabyte.com%2Fw%2Fa%2Fimp-cb1.htm&a=JK3FQ2gr22Hs7Py5CpXfhia&l=";
+uid="Ik47701XM2Hs7Px7ofL";
+ADFPGC="2,2,5,0,1600,1682,71803,10043714";
+
+document.write("<ins class='dcmads' style='display:inline-block;width:1100px;height:90px'\n");
+document.write("    data-dcm-placement='N7442.5006CHINABYTE/B22019989.235466169'\n");
+document.write("    data-dcm-rendering-mode='iframe'\n");
+document.write("    data-dcm-http-only\n");
+document.write("    data-dcm-app-id=''>\n");
+document.write("  <script src='http://www.googletagservices.com/dcm/dcmads.js'></Scr"+"ipt>\n");
+document.write("</ins>");
+
+

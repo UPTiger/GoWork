@@ -1,0 +1,186 @@
+﻿//添加广告标识
+$(function () {
+    $(".mlp_CB-dingbutong1").css("width", "1000px").css("margin", "0px auto");
+    test("div");
+    function test(tag) {
+        var pro = document.getElementsByTagName(tag);
+        var reg = new RegExp('(mlp_CB_homepage_button)|(adv_CB_homepage_button)|(adv_CB_homepage_button1)|(adv_CB_homepage_button2)', 'g');
+        //only for homepage intel ad
+        var reg_pip = new RegExp('(adv_CB_homepage_button3)|(mlp_CB_ineer_pip1)|(mlp_CB_inner_pip1)|(mlp_CB_inner_pip2)|(CB_inner_pip2)|(mlp_CB_innerB_pip1)', 'g');
+        var reg_tl = new RegExp('(mlp_cc_hp_column1-1)|(CB-inner-btxtl)|(mlp_CB_inner_column1)|(mlp_CB_homepage_column1)|(mlp_CB_homepage_column2)|(mlp_CB_homepage_column3)|(mlp_CB_homepage_dhx-column1)|(mlp_CB_shouye_dibucolumn_1)|(mlp_CB_inner_column_1)|(mlp_CB_inner_wzydbcolumn)|(mlp_CB-dingbutong1)|(mlp_CB_inner_dhxcolumn1)', 'g');
+
+        for (var i = 0; i < pro.length; i++) {
+            var pro_name = pro[i].className;
+            //banner clum
+            if (reg_tl.test(pro_name)) {
+                pro[i].style.color = 'red';
+                pro[i].style.position = 'relative';
+                pro[i].style.fontSize = '0px';
+                pro[i].style.height = "90px";
+                pro[i].innerHTML += '<div  style="position: absolute; left: 0px; bottom: 0px;width: 29px; height: 16px; background:url(http://www.chinabyte.com/w/n/ad/ad.png)"></div>';
+
+                //no_banner_clum
+            } else if (reg.test(pro_name)) {
+                pro[i].style.color = 'red';
+                pro[i].style.position = 'relative';
+                pro[i].style.fontSize = '0px';
+                pro[i].style.height = '80px';
+                pro[i].innerHTML += '<div  style="position: absolute; left: 0px; bottom: 0px;width: 29px; height: 16px; background:url(http://www.chinabyte.com/w/n/ad/ad.png)"></div>';
+            } else if (reg_pip.test(pro_name)) {
+                pro[i].style.color = 'red';
+                pro[i].style.position = 'relative';
+                pro[i].style.fontSize = '0px';
+                pro[i].innerHTML += '<div  style="position: absolute; left: 0px; bottom: 0px;width: 29px; height: 16px; background:url(http://www.chinabyte.com/w/n/ad/ad.png)"></div>';
+
+            }
+        }
+    }
+});
+
+/*******  yangxb*****/
+$(function () {
+    var keywords1 = '530831478';//530831478	网络
+    var keywords2 = '530770682';//530770682	互联网
+    var keywords3 = '530769456';//530769456	数据中心
+
+    var keywords4 = '530831286';//530831286	安全
+    var keywords5 = '530831785';//530831785	数据
+    var keywords6 = '530832782';//530832782	信息
+
+    //大数据关键词
+    var keywords7 = '531380168';//大数据
+    var keywords8 = '530831785';//数据
+    var keywords9 = '530831768';//云
+    //12,26
+    //7,19
+
+    
+
+    var s180711 = new Date('2018/07/11 00:00:00').getTime();
+    var s180712 = new Date('2018/07/12 00:00:00').getTime();
+
+    var s180723 = new Date('2018/07/23 00:00:00').getTime();
+    var s180724 = new Date('2018/07/24 00:00:00').getTime();
+
+    var date_ = new Date().getTime();//获取当前时间戳
+
+    if (channelId == 30707) {//判断频道---网络频道
+
+        if (date_ > s180723 && date_ < s180724) {//  180723
+            keynetwork(keywords1); // 网络
+            keynetwork(keywords4); // 安全
+        } 
+
+    }
+    if (channelId == 9725) {//判断频道---安全频道
+        if (date_ > s180723 && date_ < s180724) {//  180711 
+            keynetwork(keywords1);
+            keynetwork(keywords4);
+        }
+    }
+    if (channelId == 127218) {//判断频道--大数据
+
+        if (date_>s180711 && date_<s180712) {
+            $(".keyword_link").removeClass('keyword_link');
+            keybigdata(keywords7);
+            keybigdata(keywords8);
+            keybigdata(keywords9);
+        }
+    }
+});
+//网络
+function keynetwork(idd) {
+    var href = 'http://www.chinabyte.com/w/n/qcw/cisco2018/';
+    var isrc = 'http://www.chinabyte.com/w/n/ad/CiscoFYQ4-cb-network-ny-jiangjie-7873-180720.jpg';
+    var i_src = "'http://www.chinabyte.com/w/pic/article/14830/key_sj.png'";
+    var isthis = $("#k" + idd);
+    var id = isthis.attr("id");
+    var sta = 1;
+    var netCiscoFY18Q1 = 'http://ad.doubleclick.net/ddm/trackimp/N7442.5006CHINABYTE/B20311240.205271512;dc_trk_aid=405100765;dc_trk_cid=93013856;ord=[timestamp]?';
+    isthis.mouseover(function () {
+        isthis.attr("href", href);
+        if (sta == 1) {
+            var html = '<div id="tanchu" class=' + id + ' style="width: 78px;height: 73px;position: absolute;top: -78px;left: -15px;border: 1px solid #e4393c;">' +
+                '<a href=' + href + '>' +
+                '<img src=' + isrc + ' style="width:78px;height:73px;cursor: pointer;"/>' +
+                '</a>' +
+                '<i style="position: absolute;top: 73px;left: 30px;display: inline-block;width: 10px;height: 5px;background: url(' + i_src + ') no-repeat;">' +
+                '</i>' +'<img src=' + netCiscoFY18Q1 + ' style="height:0;"/>'+
+                '</div>';
+            isthis.append(html);
+        } else {
+            isthis.find("." + id).show();
+        }
+    });
+    isthis.mouseout(function () {
+        sta = 0;
+        setTimeout(function () {
+            isthis.find("." + id).hide();
+        }, 1000)
+    });
+}
+//安全
+function keysec(idd) {
+    var href = 'http://www.chinabyte.com/w/n/qcw/cisco2018/';
+    var isrc = 'http://www.chinabyte.com/w/n/ad/CiscoFYQ4-cb-network-ny-jiangjie-7873-180720.jpg';
+    var i_src = "'http://www.chinabyte.com/w/pic/article/14830/key_sj.png'";
+    var isthis = $("#k" + idd);
+    var id = isthis.attr("id");
+    var sta = 1;
+    var secCiscoFY18Q1 = 'http://ad.doubleclick.net/ddm/trackimp/N7442.5006CHINABYTE/B20311240.205261888;dc_trk_aid=405107270;dc_trk_cid=93013856;ord=[timestamp]?'
+    isthis.mouseover(function () {
+        isthis.attr("href", href);
+        if (sta == 1) {
+            var html = '<div id="tanchu" class=' + id + ' style="width: 78px;height: 73px;position: absolute;top: -78px;left: -15px;border: 1px solid #e4393c;">' +
+                '<a href=' + href + '>' +
+                '<img src=' + isrc + ' style="width:78px;height:73px;cursor: pointer;"/>' +
+                '</a>' +
+                '<i style="position: absolute;top: 73px;left: 30px;display: inline-block;width: 10px;height: 5px;background: url(' + i_src + ') no-repeat;">' +
+                '</i>' +'<img src=' + secCiscoFY18Q1 + ' style="height:0;"/>'
+                '</div>';
+            isthis.append(html);
+        } else {
+            isthis.find("." + id).show();
+        }
+    });
+    isthis.mouseout(function () {
+        sta = 0;
+        setTimeout(function () {
+            isthis.find("." + id).hide();
+        }, 1000)
+    });
+}
+//大数据
+function keybigdata(idd) {
+    var href = 'http://e.chinabyte.com/Veritas/';
+    var isrc = 'http://media.tianjimedia.com/images/2017VeritasLcQ2-cb-bigdata-nry-jiangjie_1-7873-170406.jpg';
+    var i_src = "'http://www.chinabyte.com/w/pic/article/14830/key_sj.png'";
+    var isthis = $("#k" + idd);
+    //只有关键字标红
+    isthis.addClass('keyword_link');
+    isthis.css("position","relative");
+    
+    var id = isthis.attr("id");
+    var sta = 1;
+    isthis.mouseover(function () {
+        isthis.attr("href", href);
+        if (sta == 1) {
+            var html = '<div id="tanchu" class=' + id + ' style="width: 78px;height: 73px;position: absolute;top: -78px;left: -15px;border: 1px solid #e4393c;">' +
+                '<a href=' + href + '>' +
+                '<img src=' + isrc + ' style="width:78px;height:73px;cursor: pointer;"/>' +
+                '</a>' +
+                '<i style="position: absolute;top: 73px;left: 30px;display: inline-block;width: 10px;height: 5px;background: url(' + i_src + ') no-repeat;">' +
+                '</i>' +
+                '</div>';
+            isthis.append(html);
+        } else {
+            isthis.find("." + id).show();
+        }
+    });
+    isthis.mouseout(function () {
+        sta = 0;
+        setTimeout(function () {
+            isthis.find("." + id).hide();
+        }, 1000)
+    });
+}

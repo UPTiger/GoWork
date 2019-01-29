@@ -34,17 +34,27 @@ kill -9 子进程号（可能有多个）
 
 ----------------------------------------------------------------
 
-[Note] A temporary password is generated for root@localhost: B4pt)XjlHTv4
-[Note] A temporary password is generated for root@localhost: nbOnR/qv=6Uw
 ----------Centos安装Mysql启动多实例--------------------------------
 
 安装mysql 5.7.24
  1.下载：wget https://cdn.mysql.com//Downloads/MySQL-5.7/mysql-5.7.24-linux-glibc2.12-x86_64.tar.gz
- 2.解压：tar -zxvf mysql-5.7.24-linux-glibc2.12-x86_64.tar.gz -C /usr/local 
-
-3.	echo 'export PATH=$PATH:/usr/local/mysql/bin' >> /etc/profile
-	source /etc/profile
-
+2.解压：tar -zxvf mysql-5.7.24-linux-glibc2.12-x86_64.tar.gz -C /usr/local 
+3. echo 'export PATH=$PATH:/usr/local/mysql/bin' >> /etc/profile
+   source /etc/profile
+3.1.为centos添加mysql用户组和mysql用户(-s /bin/false参数指定mysql用户仅拥有所有权，而没有登录权限):
+groupadd mysql
+useradd -r -g mysql -s /bin/false mysql
+3.2.进入安装mysql软件的目录，命令如下：
+3.3 cd /usr/local/mysql
+3.4.修改当前目录拥有者为新建的mysql用户，命令如下：
+chown -R mysql:mysql ./
+3.5.安装mysql，命令如下：
+./bin/mysqld --user=mysql --basedir=/usr/local/mysql --datadir=/usr/local/mysql/data --initialize
+[root@r730-105 8610]# 
+mysqld --initialize-insecure --user=mysql --basedir=/usr/local/mysql --datadir=/home/mysql/8610/mysql/
+bin/mysqld --initialize --user=mysql --basedir=/usr/local/mysql --datadir=/home/mysql/8610/mysql/
+bin/mysqld --initialize --user=mysql --basedir=/usr/local/mysql --datadir=/home/mysql/8610/mysql/
+[root@r730-105 mysql]# ./support-fi
 4.修改my.cnf 
 
 vim /etc/my.conf
@@ -97,7 +107,6 @@ relay-log-index = slave-relay-bin.index
 read_only
 
 5.初始化数据库
-
 cd /usr/local/mysql
 [root@r430-102 mysql]# mysqld --initialize --user=mysql --basedir=/usr/local/mysql --datadir=/home/mysql/mysql-3306/mysql/
 2018-11-30T03:30:38.923963Z 0 [Warning] TIMESTAMP with implicit DEFAULT value is deprecated. Please use --explicit_defaults_for_timestamp server option (see documentation for more details).
@@ -117,6 +126,8 @@ cd /usr/local/mysql
 2018-11-30T03:32:08.657999Z 0 [Warning] No existing UUID has been found, so we assume that this is the first time that this server has been started. Generating a new UUID: 84281278-f450-11e8-a949-44a8422ba11a.
 2018-11-30T03:32:08.689189Z 0 [Warning] Gtid table is not ready to be used. Table 'mysql.gtid_executed' cannot be opened.
 2018-11-30T03:32:08.690166Z 1 [Note] A temporary password is generated for root@localhost: nbOnR/qv=6Uw
+2019-01-23T07:49:55.564828Z 1 [Note] A temporary password is generated for root@localhost: x-oqrmdty5wX
+如果没有看到随机密码，请查看是否在日志文件里面
 
 6.启动集群
 /usr/local/mysql/bin/mysqld_multi start
@@ -144,7 +155,6 @@ mysqladmin -S /home/mysql/3619/mysql-3619.sock -u gpsadmin -p shutdown
 
 1qaz&619   fhxt&clw715#
 
-
 查看单实例：
   /usr/local/mysql/bin/mysqld_multi report 3306
 查看监听端口：
@@ -152,6 +162,8 @@ mysqladmin -S /home/mysql/3619/mysql-3619.sock -u gpsadmin -p shutdown
 修改密码：
  mysql -S /tmp/mysql-3306.sock -p
  set password=password('123456');
+
+ set password=password('fhxt&clw715#');
 使修改生效；或者重启服务
  flush privileges;
 设置远程连接mysql:
@@ -159,11 +171,6 @@ mysqladmin -S /home/mysql/3619/mysql-3619.sock -u gpsadmin -p shutdown
   FLUSH PRIVILEGES;
   其中，root是用户名，%表示所有人都可以访问；password是密码，尽量不用使用root，安全很重要。
   
-
-AServer
-3619:root@localhost: >uCXo=e5++_e
-8610:root@localhost: (on2kHE0Q0(C
-3306:root@localhost: llkP7miQsW%i
 
 访问单个Mysql
 mysql -S /home/mysql/3619/mysql-3619.sock -p
@@ -212,10 +219,8 @@ https://www.cnblogs.com/silentdoer/articles/7258232.html
 
 -------------MySql查看集群--------------------------------------------
 查询数据库中的存储过程
-方法一：
-       select `name` from mysql.proc where db = 'your_db_name' and `type` = 'PROCEDURE'
-方法二：
-         show procedure status;
+方法一：select `name` from mysql.proc where db = 'your_db_name' and `type` = 'PROCEDURE'
+方法二：show procedure status;
 查看存储过程或函数的创建代码
 show create procedure proc_name;
 show create function func_name;
@@ -234,9 +239,12 @@ socket文件：/var/run/mysqld/mysqld.pid
 ->mysql> select @@GLOBAL.sql_mode;
 ->set sql_mode=(select replace(@@GLOBAL.sql_mode,'ONLY_FULL_GROUP_BY',''));
 　　通过root用户登录之后创建
-　　>> grant all privileges on *.* to testuser@localhost identified by "123456" ;　　//　　创建新用户，用户名为testuser，密码为123456 ；
+　　>> grant all privileges on *.* to testuser@localhost identified by "123456" ;　　//　
+　　>> grant all privileges on *.* to gpsadmin@localhost identified by "1qaz&619" ;
+　创建新用户，用户名为testuser，密码为123456 ；
 　　>> grant all privileges on *.* to testuser@localhost identified by "123456" ;　　//　　设置用户testuser，可以在本地访问mysql
 　　>> grant all privileges on *.* to testuser@"%" identified by "123456" ;　　　//　　设置用户testuser，可以在远程访问mysql
+grant all privileges on *.* to gpsadmin@"%" identified by "1qaz&619" ;
 　　>> flush privileges ;　　//　　mysql 新设置用户或更改密码后需用flush privileges刷新MySQL的系统权限相关表，否则会出现拒绝访问，还有一种方法，就是重新启动mysql服务器，来使新设置生效
 
 　　2、设置用户访问数据库权限
@@ -340,3 +348,92 @@ replicate-ignore-db=mysql
 relay-log = slave-relay-bin
 relay-log-index = slave-relay-bin.index
 read_only
+
+------------单机版---------------------------
+
+
+#-------my.cnf-----------#
+# For advice on how to change settings please see
+# http://dev.mysql.com/doc/refman/5.7/en/server-configuration-defaults.html
+
+[mysqld]
+#
+# Remove leading # and set to the amount of RAM for the most important data
+# cache in MySQL. Start at 70% of total RAM for dedicated server, else 10%.
+# innodb_buffer_pool_size = 128M
+#
+# Remove leading # to turn on a very important data integrity option: logging
+# changes to the binary log between backups.
+# log_bin
+#
+# Remove leading # to set options mainly useful for reporting servers.
+# The server defaults are faster for transactions and fast SELECTs.
+# Adjust sizes as needed, experiment to find the optimal values.
+# join_buffer_size = 128M
+# sort_buffer_size = 2M
+# read_rnd_buffer_size = 2M
+#datadir=/var/lib/mysql
+user=mysql
+datadir=/mnt/data
+port=3366
+#socket=/var/lib/mysql/mysql.sock
+socket=/mnt/data/mysql.sock
+
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+
+#log-error=/var/log/mysqld.log
+log-error=/mnt/data/mysqld.log
+
+sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION 
+
+pid-file=/var/run/mysqld/mysqld.pid
+[client]
+socket=/mnt/data/mysql.sock
+#--------end my.cnf----------------#
+
+
+bin/mysqld --initialize --user=mysql --basedir=/usr/local/mysql --datadir=/home/mysql/8610/mysql/
+mysql -u root -p
+
+select host,user from user; 　　//查询mysql中所有用户权限
+grant all privileges on *.* to gpsadmin@localhost identified by "1qaz&619" ;
+grant all privileges on *.* to gpsadmin@"%" identified by "1qaz&619" ;
+
+10.开启mysql服务，命令如下：
+./support-files/mysql.server start
+11.将mysql进程放入系统进程中，命令如下：
+cp support-files/mysql.server /etc/init.d/mysqld
+12.重新启动mysql服务，命令如下：
+service mysqld restart
+13.使用随机密码登录mysql数据库，命令如下：
+mysql -u root -p
+等待系统提示，输入随机密码，即可登录
+14.进入mysql操作行，为root用户设置新密码（小编设为rootroot）：
+alter user 'root'@'localhost' identified by 'rootroot';
+alter user 'root'@'localhost' identified by 'fhxt&clw715#';
+15.设置允许远程连接数据库，命令如下：
+update user set user.Host='%' where user.User='root';
+16.刷新权限，命令如下：
+flush privileges;
+---------------------------------------------
+[root@r730-105 mysql]# service mysqld restart
+ ERROR! MySQL server PID file could not be found!
+Starting MySQL.2019-01-23T09:40:38.182471Z mysqld_safe error: log-error set to '/home/mysql/8610/log/mysqld.log', however file don't exists. Create writable for user 'mysql'.
+ ERROR! The server quit without updating PID file (/home/mysql/8610/mysqld.pid).
+
+
+[root@r730-105 8610]# touch mysqld.pid
+[root@r730-105 8610]# chmod 777 mysql.pid
+[root@r730-105 8610]# chmod 777 log
+[root@r730-105 log]# touch mysqld.log
+[root@r730-105 log]# chmod 777 mysqld.log
+
+[Err] 1067 - Invalid default value for 'gpstime'
+将数据文件中的0000-00-00 00:00:00 替换为 2018-01-01 00:00:01
+
+firewall-cmd --zone=public --add-port=8610/tcp --permanent
+firewall-cmd --reload
+
+firewall-cmd --zone=public --add-port=443/tcp --permanent && firewall-cmd --reload
+---------------------------------------

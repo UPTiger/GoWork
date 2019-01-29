@@ -148,7 +148,18 @@ vi /etc/sysconfig/iptables
 在系统原始配置的:RH-Firewall-1-INPUT规则链增加类似这样的行：
 -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 39764 -j ACCEPT
 -A RH-Firewall-1-INPUT -m state --state NEW -m udp -p udp --dport 39764 -j ACCEPT
-----
+
+----------------------------------------------------
+陶工：
+#开放端口
+firewall-cmd --zone=public --add-port=6379/tcp --permanent
+firewall-cmd --reload
+#关闭端口
+firewall-cmd --zone=public --remove-port=6379/tcp --permanent
+firewall-cmd --reload
+#查询端口是否开放
+firewall-cmd --query-port=3306/tcp
+----------------------------------------------------
 
 [CentOS](http://www.linuxidc.com/topicnews.aspx?tid=14) 7.0默认使用的是firewall作为防火墙，使用iptables必须重新设置一下
 1、直接关闭防火墙

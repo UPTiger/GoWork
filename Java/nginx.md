@@ -31,7 +31,6 @@ https://www.linuxidc.com/Linux/2016-09/134907.htm
 11.重新加载配置文件 ./nginx -s reload 
 12.开机自启动
 	vi /etc/rc.local增加/usr/local/nginx/sbin/nginx (chmod 755 rc.local)
-
 用root用户进入....nginx/sbin
 然后chown root nginx
 chmod u+s nginx
@@ -45,11 +44,11 @@ chmod 666 nginx.conf
 停止：ps–ef | grepnginx（查看进程号）
 kill -9 主进程号
 kill -9 子进程号（可能有多个）
---------------------------------------------------------------------------------
+----Nginx增加SSL模块-----------------------------------------------------------
+Nginx增加SSL模块
 nginx: [emerg] unknown directive "ssl" in /usr/local/nginx/conf/nginx.conf:102 
 到解压的nginx目录下
 ./configure --with-http_ssl_module
-
 当执行上面语句，出现./configure: error: SSL modules require the OpenSSL library.
 用 yum -y install openssl openssl-devel
 再执行./configure
@@ -57,13 +56,10 @@ nginx: [emerg] unknown directive "ssl" in /usr/local/nginx/conf/nginx.conf:102
 make ，切记不能make install 会覆盖。
 把原来nginx备份
 cp /usr/local/nginx/sbin/nginx /usr/local/nginx/sbin/nginx.bak
-
 把新的nginx覆盖旧的
 cp objs/nginx /usr/local/nginx/sbin/nginx
-
 出现错误时cp: cannot create regular file ‘/usr/local/nginx/sbin/nginx’: Text file busy
 用cp -rfp objs/nginx /usr/local/nginx/sbin/nginx解决
-
 测试nginx是否正确
 /usr/local/nginx/sbin/nginx -t
 （nginx: the configuration file /usr/local/nginx/conf/nginx.conf syntax is ok
@@ -90,22 +86,20 @@ nginx: [error] invalid PID number "" in "/usr/local/nginx/logs/nginx.pid"
 
 看nginx.pid文件已经有了。
 -----------------------Nginx TCP----------------------------------
+单次图片加载一半或几分之一
+日志提示：
+2019/01/24 10:36:02 [crit] 78585#0: *111515 open() "/usr/local/nginx/proxy_temp/9/80/0000000809" failed (13: Permission denied) while reading upstream, client: 218.17.179.250, server: bs.ifengstar.com, request: "GET /statics/js/echarts/echarts.js HTTP/1.1", upstream: "http://113.106.93.247:80/gps/statics/js/echarts/echarts.js", host: "bs.ifengstar.com", referrer: "http://bs.ifengstar.com/home.html"
+2019/01/24 10:37:27 [notice] 78615#0: signal process started
+问题指向proxy_temp权限问题
+[root@r730-105 nginx]# chmode 777 -R proxy_temp/
 
+-----------------------Nginx TCP----------------------------------
 http://nginx.org/en/docs/stream/ngx_stream_core_module.html
-
 安装：
-
 （1）配置Nginx编译文件参数
-
-```
 ./configure --prefix=/usr/local/nginx --with-http_stub_status_module --with-stream
-```
-
 （2）编译、安装，make,make install .
-
 （3）配置nginx.conf文件
-
-```
 stream {
     log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
                       '$status $body_bytes_sent "$http_referer" '
@@ -125,4 +119,6 @@ stream {
     }
  
 }
------------------------Nginx TCP----------------------------------
+-----------------------Nginx 安装参数----------------------------------
+./configure --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_ssl_module --with-stream
+make
