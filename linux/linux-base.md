@@ -70,8 +70,46 @@ chmod +x  /etc/rc.d/init.d/autostart.sh
 cd /etc/rc.d/init.d
 chkconfig --add autostart.sh
 chkconfig autostart.sh on
------------------------------
-
+---------20190227--------------------
+阿里云ECS硬盘满清理方法：
+[root@HK001-EServer /]# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/vda1        79G   74G  1.5G  99% /
+devtmpfs         16G     0   16G   0% /dev
+tmpfs            16G     0   16G   0% /dev/shm
+tmpfs            16G  660K   16G   1% /run
+tmpfs            16G     0   16G   0% /sys/fs/cgroup
+tmpfs           3.2G     0  3.2G   0% /run/user/0
+删除了很多文件后还是没有解决问题，使用du -sh /*查看时并没有太大的文件，怀疑是临时文件
+安装tmpwatch工具
+yum install tmpwatch -y
+清理文件
+[root@HK001-EServer /]# tmpwatch -afv 5 /tmp
+removing directory /tmp/.font-unix if empty
+removing directory /tmp/.ICE-unix if empty
+removing directory /tmp/systemd-private-e61901b4e9d340258460ef7c298f72c0-ntpd.service-jQCA5M/tmp if empty
+removing directory /tmp/systemd-private-e61901b4e9d340258460ef7c298f72c0-ntpd.service-jQCA5M if empty
+removing directory /tmp/.X11-unix if empty
+removing directory /tmp/.XIM-unix if empty
+removing file /tmp/hsperfdata_root/953
+removing file /tmp/hsperfdata_root/21751
+removing file /tmp/hsperfdata_root/32319
+removing file /tmp/hsperfdata_root/30008
+removing file /tmp/hsperfdata_root/8438
+removing file /tmp/hsperfdata_root/15961
+removing file /tmp/hsperfdata_root/11784
+removing file /tmp/hsperfdata_root/29248
+removing directory /tmp/hsperfdata_root if empty
+removing directory /tmp/.Test-unix if empty
+再次查看文件已经释放到正常水平
+[root@HK001-EServer /]# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/vda1        79G  8.1G   67G  11% /
+devtmpfs         16G     0   16G   0% /dev
+tmpfs            16G     0   16G   0% /dev/shm
+tmpfs            16G  628K   16G   1% /run
+tmpfs            16G     0   16G   0% /sys/fs/cgroup
+tmpfs           3.2G     0  3.2G   0% /run/user/0
 
 -----------------------------
 

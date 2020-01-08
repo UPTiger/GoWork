@@ -437,3 +437,8 @@ firewall-cmd --reload
 
 firewall-cmd --zone=public --add-port=443/tcp --permanent && firewall-cmd --reload
 ---------------------------------------
+查看mysql最大连接数：
+show full processlist; 
+
+set global max_connections=1000 ##重新设置
+show variables like '%max_connections%'; ##查询数据库当前设置的最大连接数
